@@ -81,8 +81,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
-            ->tenant(Team::class)
-            ->tenantRegistration(RegisterTeam::class)
+            // ->tenant(Team::class)
+            // ->tenantRegistration(RegisterTeam::class)
             // ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
             //     return $builder->groups([
             //         NavigationGroup::make()

@@ -9,7 +9,7 @@ class Team extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug'];
+    protected $guarded = []; 
 
     public function members()
     {
