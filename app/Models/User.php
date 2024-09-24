@@ -12,11 +12,13 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Filament\Panel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
+use Filament\Models\Contracts\FilamentUser;
 
-class User extends Authenticatable implements HasTenants
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
@@ -74,5 +76,26 @@ class User extends Authenticatable implements HasTenants
     public function team()
     {
         return $this->belongsToMany(Team::class);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        $user = Auth::user();
+        $roles = $user->getRoleNames();
+
+        if($panel->getId() === 'admin' && $roles->contains('admin') || $roles->contains('admin')){
+            return true;
+        }
+        else if($panel->getId() === 'guru' && $roles->contains('guru') || $roles->contains('guru')){
+            return true; 
+        }
+        else if($panel->getId() === 'siswa' && $roles->contains('siswa')){
+            return true;
+        }
+        else {
+            return false;
+        }
+
+        
     }
 }
