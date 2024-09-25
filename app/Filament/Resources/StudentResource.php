@@ -74,7 +74,7 @@ class StudentResource extends Resource
                         TextInput::make('contact'),
                         FileUpload::make('profile')
                             ->directory("students")
-                    ])
+                    ])->columns(2)
             ]);
     }
 

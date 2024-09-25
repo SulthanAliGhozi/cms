@@ -2,26 +2,27 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\NilaiResource\Pages;
-use App\Filament\Resources\NilaiResource\RelationManagers;
-use App\Models\CategoryNilai;
-use App\Models\Classroom;
+use Filament\Forms;
+use Filament\Tables;
 use App\Models\Nilai;
 use App\Models\Periode;
 use App\Models\Student;
 use App\Models\Subject;
-use Filament\Forms;
-use Filament\Forms\Components\Card;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use App\Models\Classroom;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use App\Models\CategoryNilai;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Card;
 use function Laravel\Prompts\select;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\NilaiResource\Pages;
+
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\NilaiResource\RelationManagers;
 
 class NilaiResource extends Resource
 {
@@ -34,27 +35,29 @@ class NilaiResource extends Resource
         return $form
             ->schema([
                 Card::make()
-                ->schema([
-                    Select::make('classrooms')
-                    ->options(Classroom::all()->pluck('name', 'id'))
-                    ->label('Kelas'),
-                    Select::make('periode')
-                    ->label("periode")
-                    ->searchable()
-                    ->options(Periode::all()->pluck('name','id')),
-                    Select::make('subject_id')
-                    ->label("Subject")
-                    ->searchable()
-                    ->options(Subject::all()->pluck('name', 'id')),
-                    Select::make('category_nilai')
-                    ->label("Category Nilai")
-                    ->searchable()
-                    ->options(CategoryNilai::all()->pluck('name', 'id')),
-                    Select::make('student')
-                    ->searchable()
-                    ->label("Siswa")
-                    ->options(Student::all()->pluck('name','id')),
-                ])
+                    ->schema([
+                        Select::make('kelas_id')
+                            ->options(Classroom::all()->pluck('name', 'id'))
+                            ->label('Kelas'),
+                        Select::make('periode_id')
+                            ->label("periode")
+                            ->searchable()
+                            ->options(Periode::all()->pluck('name', 'id')),
+                        Select::make('subject_id')
+                            ->label("Subject")
+                            ->searchable()
+                            ->options(Subject::all()->pluck('name', 'id')),
+                        Select::make('category_nilai_id')
+                            ->label("Category Nilai")
+                            ->searchable()
+                            ->options(CategoryNilai::all()->pluck('name', 'id')),
+                        Select::make('student_id')
+                            ->searchable()
+                            ->label("Siswa")
+                            ->options(Student::all()->pluck('name', 'id')),
+                        TextInput::make('nilai')
+                            ->integer(),
+                    ])->columns(2)
             ]);
     }
 
@@ -67,6 +70,7 @@ class NilaiResource extends Resource
                 TextColumn::make('category_nilai.name'),
                 TextColumn::make('nilai'),
                 TextColumn::make('periode.name'),
+                TextColumn::make('nilai'),
 
             ])
             ->filters([

@@ -36,15 +36,15 @@ class StudentHasClassResource extends Resource
 
     // protected static bool $shouldNavigationRegister = Auth::user()->email == 'admin@test.com' ? true :  false;
 
-    public static function shouldRegisterNavigation(): bool
-    {
-        if(auth()->user()->can('classroom')){
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    // public static function shouldRegisterNavigation(): bool
+    // {
+    //     if(auth()->user()->can('classroom')){
+    //         return true;
+    //     }
+    //     else {
+    //         return false;
+    //     }
+    // }
 
     public static function form(Form $form): Form
     {
