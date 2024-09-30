@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Classroom;
+use Spatie\Permission\Models\Role;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ClassroomPolicy
+class RolePolicy
 {
     use HandlesAuthorization;
 
@@ -18,19 +18,19 @@ class ClassroomPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_classroom');
+        return $user->can('view_any_role');
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Classroom  $classroom
+     * @param  \Spatie\Permission\Models\Role  $role
      * @return bool
      */
-    public function view(User $user, Classroom $classroom): bool
+    public function view(User $user, Role $role): bool
     {
-        return $user->can('view_classroom');
+        return $user->can('view_role');
     }
 
     /**
@@ -41,31 +41,31 @@ class ClassroomPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_classroom');
+        return $user->can('create_role');
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Classroom  $classroom
+     * @param  \Spatie\Permission\Models\Role  $role
      * @return bool
      */
-    public function update(User $user, Classroom $classroom): bool
+    public function update(User $user, Role $role): bool
     {
-        return $user->can('update_classroom');
+        return $user->can('update_role');
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Classroom  $classroom
+     * @param  \Spatie\Permission\Models\Role  $role
      * @return bool
      */
-    public function delete(User $user, Classroom $classroom): bool
+    public function delete(User $user, Role $role): bool
     {
-        return $user->can('delete_classroom');
+        return $user->can('delete_role');
     }
 
     /**
@@ -76,19 +76,19 @@ class ClassroomPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_classroom');
+        return $user->can('delete_any_role');
     }
 
     /**
      * Determine whether the user can permanently delete.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Classroom  $classroom
+     * @param  \Spatie\Permission\Models\Role  $role
      * @return bool
      */
-    public function forceDelete(User $user, Classroom $classroom): bool
+    public function forceDelete(User $user, Role $role): bool
     {
-        return $user->can('force_delete_classroom');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -99,19 +99,19 @@ class ClassroomPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_classroom');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
      * Determine whether the user can restore.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Classroom  $classroom
+     * @param  \Spatie\Permission\Models\Role  $role
      * @return bool
      */
-    public function restore(User $user, Classroom $classroom): bool
+    public function restore(User $user, Role $role): bool
     {
-        return $user->can('restore_classroom');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -122,19 +122,19 @@ class ClassroomPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_classroom');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
      * Determine whether the user can replicate.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Classroom  $classroom
+     * @param  \Spatie\Permission\Models\Role  $role
      * @return bool
      */
-    public function replicate(User $user, Classroom $classroom): bool
+    public function replicate(User $user, Role $role): bool
     {
-        return $user->can('replicate_classroom');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -145,7 +145,7 @@ class ClassroomPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_classroom');
+        return $user->can('{{ Reorder }}');
     }
 
 }

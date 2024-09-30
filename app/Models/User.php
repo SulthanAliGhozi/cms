@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 use Filament\Models\Contracts\FilamentUser;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable //implements FilamentUser
 
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
@@ -54,10 +54,10 @@ class User extends Authenticatable implements FilamentUser
         'password' => 'hashed',
     ];
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
-    }
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
+    // }
 
     public function getTenants(Panel $panel): Collection
     {
@@ -79,24 +79,19 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsToMany(Team::class);
     }
 
-    public function canAccessPanel(Panel $panel): bool
-    {
-        $user = Auth::user();
-        $roles = $user->getRoleNames();
+    // public function canAccessPanel(Panel $panel): bool
+    // {
+    //     $user = Auth::user();
+    //     $roles = $user->getRoleNames();
 
-        if($panel->getId() === 'admin' && $roles->contains('admin') || $roles->contains('admin')){
-            return true;
-        }
-        else if($panel->getId() === 'guru' && $roles->contains('guru') || $roles->contains('guru')){
-            return true; 
-        }
-        else if($panel->getId() === 'siswa' && $roles->contains('siswa')){
-            return true;
-        }
-        else {
-            return false;
-        }
-
-        
-    }
+    //     if ($panel->getId() === 'admin' && $roles->contains('admin') || $roles->contains('admin')) {
+    //         return true;
+    //     } else if ($panel->getId() === 'guru' && $roles->contains('guru') || $roles->contains('guru')) {
+    //         return true;
+    //     } else if ($panel->getId() === 'siswa' && $roles->contains('siswa')) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 }

@@ -2,40 +2,42 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Resources\PeriodeResource;
-use App\Filament\Resources\StudentResource\Widgets\StatsOverview;
-use Filament\Facades\Filament;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\UserMenuItem;
 use Filament\Pages;
 use Filament\Panel;
-use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
+use App\Models\Team;
 use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
-use App\Filament\Pages\Tenancy\RegisterTeam;
-use App\Filament\Resources\CategoryNilaiResource;
-use App\Filament\Resources\ClassroomResource;
-use App\Filament\Resources\DepartmentsResource;
-use App\Filament\Resources\StudentHasClassResource;
+use Filament\PanelProvider;
+use App\Filament\Auth\Login;
+use Filament\Pages\Dashboard;
+use Filament\Facades\Filament;
+use App\Filament\Auth\Register;
+use Filament\Support\Colors\Color;
+use Filament\Navigation\UserMenuItem;
+use Filament\Navigation\NavigationItem;
+use App\Filament\Resources\UserResource;
+use Filament\Navigation\NavigationGroup;
+use Filament\Http\Middleware\Authenticate;
+use Filament\Navigation\NavigationBuilder;
+use App\Filament\Resources\PeriodeResource;
 use App\Filament\Resources\StudentResource;
 use App\Filament\Resources\SubjectResource;
 use App\Filament\Resources\TeacherResource;
-use App\Filament\Resources\UserResource;
-use App\Models\Team;
-use Filament\Navigation\NavigationBuilder;
-use Filament\Navigation\NavigationGroup;
-use Filament\Navigation\NavigationItem;
-use Filament\Pages\Dashboard;
+use App\Filament\Pages\Tenancy\RegisterTeam;
+use App\Filament\Resources\ClassroomResource;
+use App\Filament\Resources\DepartmentsResource;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use App\Filament\Resources\CategoryNilaiResource;
+use App\Filament\Resources\StudentHasClassResource;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use App\Filament\Resources\StudentResource\Widgets\StatsOverview;
+use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -46,15 +48,14 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop(true)
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->registration(Register::class)
+            ->login(Login::class)
             ->colors([
                 'primary' => Color::Fuchsia,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
-            ->pages([
-                Pages\Dashboard::class,
-            ])
+            ->pages([])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
@@ -75,7 +76,13 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
+            ->plugins(
+                [
+                    \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+                    // FilamentSpatieRolesPermissionsPlugin::make()
+
+                ]
+            )
             // ->tenant(Team::class)
             // ->tenantRegistration(RegisterTeam::class)
             // ->navigation(function (NavigationBuilder $builder): NavigationBuilder {

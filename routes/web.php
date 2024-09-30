@@ -16,8 +16,8 @@ use Spatie\Permission\Models\Role;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
-Route::get('/test/{id}', function($id){
+Route::get('/test/{id}', function ($id) {
     return $id;
 })->name('download.pdf');

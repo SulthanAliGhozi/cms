@@ -74,6 +74,11 @@ class StudentResource extends Resource
                         TextInput::make('contact'),
                         FileUpload::make('profile')
                             ->directory("students")
+                            ->imageEditor()
+                            ->downloadable()
+                            ->openable()
+                            ->previewable(true)
+                            ->required()
                     ])->columns(2)
             ]);
     }
@@ -103,10 +108,11 @@ class StudentResource extends Resource
                 TextColumn::make('gender')
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('contact'),
-                ImageColumn::make('profile')->circular(),
+                ImageColumn::make('profile')
+                    ->circular(),
                 TextColumn::make('status')
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->formatStateUsing(fn (string $state): string => ucwords("{$state}"))
+                    ->formatStateUsing(fn(string $state): string => ucwords("{$state}"))
             ])
             ->filters([
                 SelectFilter::make('status')
@@ -199,27 +205,27 @@ class StudentResource extends Resource
                                                 Components\TextEntry::make('birthday'),
 
                                             ])
-                                            ->inlineLabel()
-                                            ->columns(1),
+                                                ->inlineLabel()
+                                                ->columns(1),
 
                                             Components\Group::make([
                                                 Components\TextEntry::make('religion'),
                                                 Components\TextEntry::make('contact'),
                                                 Components\TextEntry::make('status')
-                                                ->badge()
-                                                ->color(fn (string $state): string => match ($state) {
-                                                    'accept' => 'success',
-                                                    'off' => 'danger',
-                                                    'grade' => 'success',
-                                                    'move' => 'warning',
-                                                    'wait' => 'gray'
-                                                }),
+                                                    ->badge()
+                                                    ->color(fn(string $state): string => match ($state) {
+                                                        'accept' => 'success',
+                                                        'off' => 'danger',
+                                                        'grade' => 'success',
+                                                        'move' => 'warning',
+                                                        'wait' => 'gray'
+                                                    }),
                                                 Components\ViewEntry::make('QRCode')
-                                                ->view('filament.resources.students.qrcode'),
+                                                    ->view('filament.resources.students.qrcode'),
                                             ])
-                                            ->inlineLabel()
-                                            ->columns(1),
-                                    ])
+                                                ->inlineLabel()
+                                                ->columns(1),
+                                        ])
 
                                 ])->from('lg')
                             ])->columns(1)

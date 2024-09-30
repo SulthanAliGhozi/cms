@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\NilaiResource\Pages;
 
+use Closure;
 use App\Models\Nilai;
 use Filament\Actions;
 use App\Models\Periode;
@@ -18,6 +19,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use App\Filament\Resources\NilaiResource;
+use Awcodes\TableRepeater\Components\TableRepeater;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateNilai extends CreateRecord
@@ -56,10 +58,10 @@ class CreateNilai extends CreateRecord
                             ->options(CategoryNilai::all()->pluck('name', 'id')),
                     ])->columns(3),
 
-                Repeater::make('nilaistudents')
-                    ->label('Grade')
+                TableRepeater::make('nilaistudents')
                     ->schema(fn(Get $get): array => [
                         Select::make('student')
+                            ->hiddenLabel()
                             ->options(function () use ($get) {
                                 $data = Student::whereIn('id', function ($query) use ($get) {
                                     $query->Select('students_id')
@@ -70,10 +72,43 @@ class CreateNilai extends CreateRecord
                                 })
                                     ->pluck('name', 'id');
                                 return $data;
-                            })
-                            ->label('Student'),
+                            }),
                         TextInput::make('nilai')
-                    ])->columns(2)
+                            ->hiddenLabel()
+                            ->rules([
+                                fn(Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
+                                    if ($get('nilai') > 100) {
+                                        $fail("nilai to big");
+                                    }
+                                },
+                            ])
+                    ])->columnSpan('full'),
+
+                // Repeater::make('nilaistudents')
+                //     ->label('Grade')
+                //     ->schema(fn(Get $get): array => [
+                //         Select::make('student')
+                //             ->options(function () use ($get) {
+                //                 $data = Student::whereIn('id', function ($query) use ($get) {
+                //                     $query->Select('students_id')
+                //                         ->from('student_has_classes')
+                //                         ->where('classrooms_id', $get('classrooms'))
+                //                         ->where('periode_id', $get('periode'))
+                //                         ->where('is_open', true)->pluck('students_id');
+                //                 })
+                //                     ->pluck('name', 'id');
+                //                 return $data;
+                //             })
+                //             ->label('Student'),
+                //         TextInput::make('nilai')
+                //             ->rules([
+                //                 fn(Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
+                //                     if ($get('nilai') > 100) {
+                //                         $fail("nilai to big");
+                //                     }
+                //                 },
+                //             ])
+                //     ])->columns(2)
             ]);
     }
 

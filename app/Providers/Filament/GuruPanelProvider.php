@@ -25,6 +25,7 @@ class GuruPanelProvider extends PanelProvider
         return $panel
             ->id('guru')
             ->path('guru')
+            ->registration()
             ->login()
             ->colors([
                 'primary' => Color::Violet,

@@ -45,7 +45,7 @@ class ClassroomResource extends Resource
                     ->schema([
                         TextInput::make('name')
                             ->reactive()
-                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', \Str::slug($state))),
+                            ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', \Str::slug($state))),
                         TextInput::make('slug')
 
                     ])
