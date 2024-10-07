@@ -15,7 +15,9 @@ use Filament\Support\Colors\Color;
 use Filament\Navigation\UserMenuItem;
 use Filament\Navigation\NavigationItem;
 use App\Filament\Resources\UserResource;
+use Awcodes\LightSwitch\Enums\Alignment;
 use Filament\Navigation\NavigationGroup;
+use Awcodes\LightSwitch\LightSwitchPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Navigation\NavigationBuilder;
 use App\Filament\Resources\PeriodeResource;
@@ -32,11 +34,16 @@ use App\Filament\Resources\StudentHasClassResource;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Swis\Filament\Backgrounds\ImageProviders\MyImages;
 use Filament\Http\Middleware\DisableBladeIconComponents;
+use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use App\Filament\Resources\StudentResource\Widgets\StatsOverview;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Filament\Navigation\MenuItem;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 
 class AdminPanelProvider extends PanelProvider
@@ -50,6 +57,9 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->registration(Register::class)
             ->login(Login::class)
+            ->brandName('Testing')
+            // ->brandLogo(asset('images/backgrounds/profil_lk.jpeg'))
+            // ->brandLogoHeight('2rem')
             ->colors([
                 'primary' => Color::Fuchsia,
             ])
@@ -62,6 +72,7 @@ class AdminPanelProvider extends PanelProvider
                 StatsOverview::class
             ])
             ->middleware([
+                \Hasnayeen\Themes\Http\Middleware\SetTheme::class,
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
@@ -78,9 +89,37 @@ class AdminPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->plugins(
                 [
-                    \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+                    \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
                     // FilamentSpatieRolesPermissionsPlugin::make()
-
+                    LightSwitchPlugin::make()
+                        ->position(Alignment::BottomRight),
+                    // // AVAILABLE POSISI
+                    // Alignment::TopLeft
+                    // Alignment::TopCenter
+                    // Alignment::TopRight
+                    // Alignment::BottomLeft
+                    // Alignment::BottomCenter
+                    // Alignment::BottomRight,
+                    FilamentBackgroundsPlugin::make()
+                        ->showAttribution(false)
+                        ->imageProvider(
+                            MyImages::make()
+                                ->directory('images/backgrounds')
+                        ),
+                    \Hasnayeen\Themes\ThemesPlugin::make(),
+                    FilamentEditProfilePlugin::make()
+                        ->shouldShowAvatarForm(
+                            value: true,
+                            directory: 'avatars', // image will be stored in 'storage/app/public/avatars
+                            rules: 'mimes:jpeg,png,jpg|max:1024' //only accept jpeg and png files with a maximum size of 1MB
+                        ),
+                    \TomatoPHP\FilamentCms\FilamentCMSPlugin::make()
+                        ->useCategory()
+                        ->usePost()
+                        ->allowExport()
+                        ->allowImport()
+                        ->allowBehanceImport()
+                        ->usePageBuilder()
                 ]
             )
             // ->tenant(Team::class)
@@ -138,16 +177,15 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications();
     }
 
-    public function boot(): void
-    {
-        Filament::serving(function () {
-            Filament::registerUserMenuItems([
-                // UserMenuItem::make()
-                //     ->label('Settings')
-                //     ->url(PeriodeResource::getUrl())
-                //     ->icon('heroicon-s-cog'),
-                // ...
-            ]);
-        });
-    }
+    // public function boot(): void
+    // {
+    //     Filament::serving(function () {
+    //         Filament::registerUserMenuItems([
+    //             UserMenuItem::make()
+    //                 ->label(__('filament-edit-profile::default.title'))
+    //                 ->url(EditProfilePage::getUrl())
+    //                 ->icon('heroicon-m-user-circle'),
+    //         ]);
+    //     });
+    // }
 }

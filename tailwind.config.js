@@ -1,7 +1,11 @@
 const colors = require("tailwindcss/colors");
 
 module.exports = {
-    content: ["./resources/**/*.blade.php", "./vendor/filament/**/*.blade.php"],
+    content: [
+        "./resources/**/*.blade.php",
+        "./vendor/filament/**/*.blade.php",
+        "./vendor/bezhansalleh/filament-language-switch/resources/views/language-switch.blade.php",
+    ],
     darkMode: "class",
     theme: {
         extend: {
