@@ -113,13 +113,7 @@ class AdminPanelProvider extends PanelProvider
                             directory: 'avatars', // image will be stored in 'storage/app/public/avatars
                             rules: 'mimes:jpeg,png,jpg|max:1024' //only accept jpeg and png files with a maximum size of 1MB
                         ),
-                    \TomatoPHP\FilamentCms\FilamentCMSPlugin::make()
-                        ->useCategory()
-                        ->usePost()
-                        ->allowExport()
-                        ->allowImport()
-                        ->allowBehanceImport()
-                        ->usePageBuilder()
+
                 ]
             )
             // ->tenant(Team::class)

@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('nis')->nullable();
             $table->string('name');
-            $table->enum('gender',['Male','Female'])->default('Male');
+            $table->enum('gender', ['Male', 'Female'])->default('Male');
             $table->date('birthday')->nullable();
-            $table->enum('religion',['Islam', 'Katolik', 'Protestan', 'Hindu', 'Buddha', 'Khonghucu'])->default('Islam');
+            $table->enum('religion', ['Islam', 'Katolik', 'Protestan', 'Hindu', 'Buddha', 'Khonghucu'])->default('Islam');
             $table->string('contact')->nullable();
             $table->string('profile')->nullable();
+            $table->string('user_id');
             $table->enum('status', ['accept', 'off', 'move', 'grade', 'wait'])->default('wait');
             $table->timestamps();
         });

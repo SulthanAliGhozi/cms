@@ -64,17 +64,7 @@ class AppServiceProvider extends ServiceProvider
                 ->circular();
         });
 
-        FilamentCMS::types()->register([
-            CmsType::make('building')
-                ->label('Buildings')
-                ->icon('heroicon-o-home')
-                ->color('danger')
-        ]);
 
-        FilamentCMS::authors()->register([
-            CmsAuthor::make('Admin')
-                ->model(\App\Models\User::class)
-        ]);
 
 
 
