@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use PhpParser\Node\Expr\Cast;
 
 class Post extends Model
 {
@@ -12,7 +11,16 @@ class Post extends Model
 
     protected $guarded = [];
 
+    //laravel 10
     protected $casts = [
-        "description" => "array",
+        'description' => 'array'
     ];
+
+    //casts for laravel 11
+    // protected function casts(): array
+    // {
+    //     return [
+    //         'description' => 'array'
+    //     ];
+    // }
 }

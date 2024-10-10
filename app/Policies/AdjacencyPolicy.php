@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Subject;
+use App\Models\Adjacency;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class SubjectPolicy
+class AdjacencyPolicy
 {
     use HandlesAuthorization;
 
@@ -18,19 +18,19 @@ class SubjectPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_subject');
+        return $user->can('view_any_adjacency');
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Subject  $subject
+     * @param  \App\Models\Adjacency  $adjacency
      * @return bool
      */
-    public function view(User $user, Subject $subject): bool
+    public function view(User $user, Adjacency $adjacency): bool
     {
-        return $user->can('view_subject');
+        return $user->can('view_adjacency');
     }
 
     /**
@@ -41,31 +41,31 @@ class SubjectPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_subject');
+        return $user->can('create_adjacency');
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Subject  $subject
+     * @param  \App\Models\Adjacency  $adjacency
      * @return bool
      */
-    public function update(User $user, Subject $subject): bool
+    public function update(User $user, Adjacency $adjacency): bool
     {
-        return $user->can('update_subject');
+        return $user->can('update_adjacency');
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Subject  $subject
+     * @param  \App\Models\Adjacency  $adjacency
      * @return bool
      */
-    public function delete(User $user, Subject $subject): bool
+    public function delete(User $user, Adjacency $adjacency): bool
     {
-        return $user->can('delete_subject');
+        return $user->can('delete_adjacency');
     }
 
     /**
@@ -76,19 +76,19 @@ class SubjectPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_subject');
+        return $user->can('delete_any_adjacency');
     }
 
     /**
      * Determine whether the user can permanently delete.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Subject  $subject
+     * @param  \App\Models\Adjacency  $adjacency
      * @return bool
      */
-    public function forceDelete(User $user, Subject $subject): bool
+    public function forceDelete(User $user, Adjacency $adjacency): bool
     {
-        return $user->can('force_delete_subject');
+        return $user->can('force_delete_adjacency');
     }
 
     /**
@@ -99,19 +99,19 @@ class SubjectPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_subject');
+        return $user->can('force_delete_any_adjacency');
     }
 
     /**
      * Determine whether the user can restore.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Subject  $subject
+     * @param  \App\Models\Adjacency  $adjacency
      * @return bool
      */
-    public function restore(User $user, Subject $subject): bool
+    public function restore(User $user, Adjacency $adjacency): bool
     {
-        return $user->can('restore_subject');
+        return $user->can('restore_adjacency');
     }
 
     /**
@@ -122,19 +122,19 @@ class SubjectPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_subject');
+        return $user->can('restore_any_adjacency');
     }
 
     /**
      * Determine whether the user can replicate.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Subject  $subject
+     * @param  \App\Models\Adjacency  $adjacency
      * @return bool
      */
-    public function replicate(User $user, Subject $subject): bool
+    public function replicate(User $user, Adjacency $adjacency): bool
     {
-        return $user->can('replicate_subject');
+        return $user->can('replicate_adjacency');
     }
 
     /**
@@ -145,7 +145,7 @@ class SubjectPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_subject');
+        return $user->can('reorder_adjacency');
     }
 
 }

@@ -19,6 +19,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Ramsey\Collection\Set as CollectionSet;
+use Illuminate\Support\Str;
 
 class CategoryNilaiResource extends Resource
 {
@@ -40,7 +41,7 @@ class CategoryNilaiResource extends Resource
                     ->schema([
                         TextInput::make('name')
                             ->live()
-                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', \Str::slug($state))),
+                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                         TextInput::make('slug')
                     ])
             ]);

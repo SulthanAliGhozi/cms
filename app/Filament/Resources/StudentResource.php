@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\ReligionStatus;
 use App\Filament\Resources\StudentResource\Pages;
 use App\Filament\Resources\StudentResource\RelationManagers;
 use App\Models\Student;
 use App\Models\StudentHasClass;
-use Filament\Actions\CreateAction;
+use Filament\Actions\Modal\Actions\Action;
 use Filament\Forms;
-use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -24,10 +24,12 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use stdClass;
@@ -63,23 +65,11 @@ class StudentResource extends Resource
                         DatePicker::make('birthday')
                             ->label("Birthday"),
                         Select::make('religion')
-                            ->options([
-                                'Islam' => "Islam",
-                                'Katolik' => "Katolik",
-                                'Protestan' => "Protestan",
-                                'Hindu' => 'Hindu',
-                                'Buddha' => "Buddha",
-                                'Khonghucu' => "Khonghucu"
-                            ]),
+                            ->options(ReligionStatus::class),
                         TextInput::make('contact'),
                         FileUpload::make('profile')
                             ->directory("students")
-                            ->imageEditor()
-                            ->downloadable()
-                            ->openable()
-                            ->previewable(true)
-                            ->required()
-                    ])->columns(2)
+                    ])
             ]);
     }
 
@@ -105,14 +95,12 @@ class StudentResource extends Resource
                 TextColumn::make('birthday')
                     ->label("Birthday")
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('gender')
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('contact'),
-                ImageColumn::make('profile')
-                    ->circular(),
+                SelectColumn::make('religion')->options(ReligionStatus::class),
+                ImageColumn::make('profile')->circular()->extraImgAttributes(['img_preview']),
                 TextColumn::make('status')
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->formatStateUsing(fn(string $state): string => ucwords("{$state}"))
+                    ->formatStateUsing(fn (string $state): string => ucwords("{$state}")),
             ])
             ->filters([
                 SelectFilter::make('status')
@@ -213,7 +201,7 @@ class StudentResource extends Resource
                                                 Components\TextEntry::make('contact'),
                                                 Components\TextEntry::make('status')
                                                     ->badge()
-                                                    ->color(fn(string $state): string => match ($state) {
+                                                    ->color(fn (string $state): string => match ($state) {
                                                         'accept' => 'success',
                                                         'off' => 'danger',
                                                         'grade' => 'success',

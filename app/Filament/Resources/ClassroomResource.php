@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ClassroomResource\Pages;
 use App\Filament\Resources\ClassroomResource\RelationManagers\SubjectsRelationManager;
 use App\Models\Classroom;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -13,9 +14,11 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
-class ClassroomResource extends Resource
+class ClassroomResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Classroom::class;
 
@@ -45,7 +48,7 @@ class ClassroomResource extends Resource
                     ->schema([
                         TextInput::make('name')
                             ->reactive()
-                            ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', \Str::slug($state))),
+                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                         TextInput::make('slug')
 
                     ])
@@ -57,7 +60,10 @@ class ClassroomResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name'),
-                TextColumn::make('slug')
+                TextColumn::make('slug'),
+                TextColumn::make('students_count')->counts([
+                    'students' => fn (Builder $query) => $query->where('periode_id', 4),
+                ])
             ])
             ->filters([
                 //
@@ -88,6 +94,17 @@ class ClassroomResource extends Resource
             'index' => Pages\ListClassrooms::route('/'),
             'create' => Pages\CreateClassroom::route('/create'),
             'edit' => Pages\EditClassroom::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
         ];
     }
 }

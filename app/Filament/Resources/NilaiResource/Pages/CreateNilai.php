@@ -2,25 +2,28 @@
 
 namespace App\Filament\Resources\NilaiResource\Pages;
 
-use Closure;
+use App\Filament\Resources\NilaiResource;
+use App\Models\CategoryNilai;
+use App\Models\Classroom;
 use App\Models\Nilai;
-use Filament\Actions;
 use App\Models\Periode;
 use App\Models\Student;
 use App\Models\Subject;
+use Awcodes\TableRepeater\Components\TableRepeater;
+use Awcodes\TableRepeater\Header;
+use Closure;
+use Filament\Actions;
+use Filament\Actions\Concerns\HasForm;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Forms\Form;
-use App\Models\Classroom;
-use App\Models\CategoryNilai;
-use Filament\Forms\Components\Card;
-use Illuminate\Support\Facades\Auth;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\TextInput;
-use App\Filament\Resources\NilaiResource;
-use Awcodes\TableRepeater\Components\TableRepeater;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class CreateNilai extends CreateRecord
 {
@@ -30,102 +33,85 @@ class CreateNilai extends CreateRecord
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Card::make()
-                    ->schema([
-                        Select::make('classrooms')
-                            ->options(Classroom::all()->pluck('name', 'id'))
-                            ->label('Kelas')
-                            ->live()
-                            ->afterStateUpdated(function (Set $set) {
-                                $set('student', null);
-                                $set('subject', null);
-                            }),
-                        Select::make('periode')
-                            ->label("periode")
-                            ->searchable()
-                            ->options(Periode::all()->pluck('name', 'id'))->live()
-                            ->preload()
-                            ->afterStateUpdated(fn(Set $set) => $set('student', null)),
-                        Select::make('subject_id')
-                            ->label("Subject")
-                            ->searchable()
-                            ->options(Subject::all()->pluck('name', 'id')),
-                        Select::make('category_nilai')
-                            ->label("Category Nilai")
-                            ->searchable()
-                            ->options(CategoryNilai::all()->pluck('name', 'id')),
-                    ])->columns(3),
+        return $form->schema([
+            Card::make()
+                ->schema([
+                    Card::make()
+                        ->schema([
+                            Select::make('classrooms')
+                                ->options(Classroom::all()->pluck('name', 'id'))
+                                ->label('Class')
+                                ->live()
+                                ->afterStateUpdated(function (Set $set) {
+                                    $set('student', null);
+                                    $set('periode', null);
+                                }),
+                            Select::make('periode')
+                                ->label("Periode")
+                                ->searchable()
+                                ->options(Periode::all()->pluck('name', 'id'))
+                                ->live()
+                                ->preload()
+                                ->afterStateUpdated(fn(Set $set) => $set('student', null)),
+                            Select::make('subject_id')
+                                ->label("Subject")
+                                ->searchable()
+                                ->options(Subject::all()->pluck('name', 'id')),
+                            Select::make('category_nilai')
+                                ->label("Category Nilai")
+                                ->searchable()
+                                ->options(CategoryNilai::all()->pluck('name', 'id'))
+                                ->columnSpan(3)
+                        ])->columns(3),
 
-                TableRepeater::make('nilaistudents')
-                    ->schema(fn(Get $get): array => [
-                        Select::make('student')
-                            ->hiddenLabel()
+                    Repeater::make('nilaistudents')
+                        ->label("Grade")
+                        ->schema(fn (Get $get): array => [
+                            Select::make('student')
                             ->options(function () use ($get) {
-                                $data = Student::whereIn('id', function ($query) use ($get) {
-                                    $query->Select('students_id')
+                                $data = Student::whereIn('id', function ($query) use ($get){
+                                    $query->select('students_id')
                                         ->from('student_has_classes')
                                         ->where('classrooms_id', $get('classrooms'))
                                         ->where('periode_id', $get('periode'))
                                         ->where('is_open', true)->pluck('students_id');
                                 })
-                                    ->pluck('name', 'id');
+                                ->pluck('name', 'id');
                                 return $data;
-                            }),
-                        TextInput::make('nilai')
-                            ->hiddenLabel()
+                            } )
+                                ->label('Student'),
+
+                            TextInput::make('nilai')
                             ->rules([
-                                fn(Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
+                                fn (Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
+                                    //code query
+
                                     if ($get('nilai') > 100) {
-                                        $fail("nilai to big");
+                                        $fail("Nilai to big");
                                     }
                                 },
                             ])
-                    ])->columnSpan('full'),
+                        ])->columns(2)
 
-                // Repeater::make('nilaistudents')
-                //     ->label('Grade')
-                //     ->schema(fn(Get $get): array => [
-                //         Select::make('student')
-                //             ->options(function () use ($get) {
-                //                 $data = Student::whereIn('id', function ($query) use ($get) {
-                //                     $query->Select('students_id')
-                //                         ->from('student_has_classes')
-                //                         ->where('classrooms_id', $get('classrooms'))
-                //                         ->where('periode_id', $get('periode'))
-                //                         ->where('is_open', true)->pluck('students_id');
-                //                 })
-                //                     ->pluck('name', 'id');
-                //                 return $data;
-                //             })
-                //             ->label('Student'),
-                //         TextInput::make('nilai')
-                //             ->rules([
-                //                 fn(Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
-                //                     if ($get('nilai') > 100) {
-                //                         $fail("nilai to big");
-                //                     }
-                //                 },
-                //             ])
-                //     ])->columns(2)
-            ]);
+                ])
+
+        ]);
     }
 
-    public function save()
-    {
-        $get =  $this->form->getState();
+
+    public function save(){
+        $get = $this->form->getState();
 
         $insert = [];
-        foreach ($get['nilaistudents'] as $row) {
+        foreach($get['nilaistudents'] as $row) {
             array_push($insert, [
-                'kelas_id' => $get['classrooms'],
+                'class_id' => $get['classrooms'],
                 'student_id' => $row['student'],
                 'periode_id' => $get['periode'],
                 'teacher_id' => Auth::user()->id,
                 'subject_id' => $get['subject_id'],
                 'category_nilai_id' => $get['category_nilai'],
-                'nilai' => $row['nilai'],
+                'nilai' => $row['nilai']
             ]);
         }
 
